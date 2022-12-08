@@ -9,26 +9,7 @@ def load(path):
 class Tree:
     def __init__(self, height: int):
         self.height = height
-
-        self.visible = None
-
-    def set_neighbours(self, neighbours: list):
-        self.up = neighbours[0]
-        self.left = neighbours[1]
-        self.down = neighbours[2]
-        self.right = neighbours[3]
-
-    def get_neighbours(self):
-        return [self.up, self.left, self.down, self.right]
-
-    def find_visible(self):
-        neighbours = self.get_neighbours()
-        if None in neighbours:
-            self.visible = True
-        else:
-
-    def check_up(self):
-        if self.height > self.up.height
+        self.visible = False
 
     def __str__(self):
         return f"Tree of height {self.height}"
@@ -37,7 +18,13 @@ class Tree:
         return f"Tree(height={self.height})"
 
 
+def count_trees(trees):
+    return sum([sum([tree.visible for tree in tree_row]) for tree_row in trees])
+
+
 tree_heights = load("data/08/test.txt")
+
+# Assignment 1
 
 trees = []
 
@@ -48,12 +35,42 @@ for row in range(len(tree_heights)):
         tree_row.append(new_tree)
     trees.append(tree_row)
 
+# Check rows
 for row, tree_row in enumerate(trees):
+    # Check left to right
+    row_max = 0
     for column, tree in enumerate(tree_row):
-        up = trees[row-1][column] if row != 0 else None
-        left = trees[row][column-1] if column != 0 else None
-        down = trees[row+1][column] if row != len(trees) - 1 else None
-        right = trees[row][column+1] if column != len(tree_row) - 1 else None
-        tree.set_neighbours([up, left, down, right])
+        if column == 0 or tree.height > row_max:
+            tree.visible = True
+            row_max = tree.height
 
-print(trees[0][2].get_neighbours())
+    # Check right to left
+    row_max = 0
+    for column, tree in enumerate(reversed(tree_row)):
+        if column == 0 or tree.height > row_max:
+            tree.visible = True
+            row_max = tree.height
+
+# Check columns
+for col in range(len(trees[0])):
+    # Check top to bottom
+    col_max = 0
+    for row, tree_row in enumerate(trees):
+        tree = tree_row[col]
+        if row == 0 or tree.height > col_max:
+            tree.visible = True
+            col_max = tree.height
+
+    # Check bottom to top
+    col_max = 0
+    for row, tree_row in enumerate(reversed(trees)):
+        tree = tree_row[col]
+        if row == 0 or tree.height > col_max:
+            tree.visible = True
+            col_max = tree.height
+
+print("Assignment 1:")
+print("Visible trees: ", count_trees(trees))
+
+# Assignment 2
+
